@@ -48,11 +48,11 @@
         </div>
         <div class="text-right">
           <div class="flex space-x-2 mb-2 justify-end">
-            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">🟢 Online</span>
-            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">🖥️ Client App</span>
+            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">ðŸŸ¢ Online</span>
+            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">ðŸ–¥ï¸ Client App</span>
           </div>
           <p id="currentDateTime" class="text-sm text-gray-500"></p>
-          <button class="text-xs text-blue-600 hover:text-blue-800 mt-1" onclick="showSettings()">⚙️ Pengaturan</button>
+          <button class="text-xs text-blue-600 hover:text-blue-800 mt-1" onclick="showSettings()">âš™ï¸ Pengaturan</button>
         </div>
       </div>
       <!-- Info sekolah ringkas -->
@@ -71,7 +71,7 @@
         <div class="flex gap-2">
           <select id="yearSelector" class="bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-2 rounded" onchange="changeYear()"></select>
           <button onclick="exportAllMonths()" class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-2 rounded">Export Semua Bulan</button>
-          <button onclick="showSyncModal()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded">🔄 Sinkronisasi</button>
+          <button onclick="showSyncModal()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded">ðŸ”„ Sinkronisasi</button>
         </div>
       </div>
       <div id="monthsGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2"></div>
@@ -142,15 +142,15 @@
         </div>
       </div>
       <div class="flex flex-wrap gap-2 border-t pt-3">
-        <button onclick="exportToExcel()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">📊 Export Excel</button>
-        <button onclick="exportToPDF()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">📄 Export PDF</button>
-        <button onclick="printReport()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">🖨️ Cetak</button>
-        <button onclick="backupData()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">💾 Backup</button>
+        <button onclick="exportToExcel()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">ðŸ“Š Export Excel</button>
+        <button onclick="exportToPDF()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">ðŸ“„ Export PDF</button>
+        <button onclick="printReport()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">ðŸ–¨ï¸ Cetak</button>
+        <button onclick="backupData()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">ðŸ’¾ Backup</button>
         <label class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded cursor-pointer">ðŸ“‚ Restore
           <input type="file" id="restoreFile" accept=".json" class="hidden" onchange="restoreData(event)">
         </label>
-        <button onclick="generateReport()" class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded">📈 Laporan</button>
-        <button onclick="showSyncModal()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded">🔄 Sinkronisasi</button>
+        <button onclick="generateReport()" class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded">ðŸ“ˆ Laporan</button>
+        <button onclick="showSyncModal()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded">ðŸ”„ Sinkronisasi</button>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mt-4">
         <div class="text-center"><span id="filteredCount" class="block text-2xl font-bold text-blue-600">0</span><span class="text-gray-600">Item Ditampilkan</span></div>
@@ -218,10 +218,10 @@
       <div class="space-y-3">
         <p class="text-sm text-gray-600">Spreadsheet ID: <span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">1zupzYsWd6lX9ylgnWNpiv4lCmVdhK22u4cLeHjva4Uw</span></p>
         <div class="flex gap-2">
-          <button onclick="syncToSpreadsheet()" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded">⬆️ Upload</button>
-          <button onclick="syncFromSpreadsheet()" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded">⬇️ Tarik</button>
+          <button onclick="syncToSpreadsheet()" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded">â¬†ï¸ Upload</button>
+          <button onclick="syncFromSpreadsheet()" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded">â¬‡ï¸ Tarik</button>
         </div>
-        <button onclick="fullSync()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded">🔄 Sinkronisasi Penuh</button>
+        <button onclick="fullSync()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded">ðŸ”„ Sinkronisasi Penuh</button>
       </div>
     </div>
   </div>
@@ -639,7 +639,7 @@
       const server = await pullServerMonthItems(currentMonth, currentYear);
       showSyncLoading('Menerapkan ke aplikasiâ€¦', 70);
       applyToLocalState(server);
-      showSyncLoading('Selesai ✅', 100);
+      showSyncLoading('Selesai âœ…', 100);
     }catch(err){ alert('Gagal menarik data: '+err.message); }
     finally{ setTimeout(hideSyncLoading, 600); }
   }
@@ -648,7 +648,7 @@
       const local = getLocalMonthItems();
       showSyncLoading('Mengirim ke Spreadsheetâ€¦', 70);
       await pushItems(local);
-      showSyncLoading('Selesai ✅', 100);
+      showSyncLoading('Selesai âœ…', 100);
     }catch(err){ alert('Gagal mengirim data: '+err.message); }
     finally{ setTimeout(hideSyncLoading, 600); }
   }
@@ -663,7 +663,7 @@
       applyToLocalState(merged);
       showSyncLoading('Menulis ke Spreadsheetâ€¦', 95);
       await pushItems(merged);
-      showSyncLoading('Sinkronisasi selesai ✅', 100);
+      showSyncLoading('Sinkronisasi selesai âœ…', 100);
     }catch(err){ alert('Sinkronisasi gagal: '+err.message); }
     finally{ setTimeout(hideSyncLoading, 700); }
   }
