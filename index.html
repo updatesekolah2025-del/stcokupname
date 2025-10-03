@@ -709,75 +709,54 @@
   window.selectMonth = selectMonth;
   </script>
 
-<!-- ==== SISTOCK v23 FINAL Data Layer (preserve UI) ==== -->
+<!-- === Injected: SISTOCK JSONP Data Layer (keeps UI unchanged) === -->
 <script>
 (function () {
   "use strict";
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxxxIotK85XWuqoMUZhxeiP7LaayFX19UEVAG5SfPPpjQD0152DfjSfpSNmJQzMCgNYVQ/exec";
-  const SPREADSHEET_ID = "1zupzYsWd6lX9ylgnWNpiv4lCmVdhK22u4cLeHjva4Uw";
-  const titleCase = s => (s = String(s || "").toLowerCase()) ? s[0].toUpperCase() + s.slice(1) : s;
-  const nowIso = () => new Date().toISOString();
-  const httpErr = r => new Error("HTTP " + r.status + " " + (r.statusText || ""));
-  async function getJSON(url) {
-    const r = await fetch(url, { method: "GET", cache: "no-cache" });
-    if (!r.ok) throw httpErr(r);
-    const ct = (r.headers.get("content-type") || "").toLowerCase();
-    if (!ct.includes("application/json")) { const t = await r.text(); throw new Error("Non-JSON: " + t.slice(0, 160)); }
-    return r.json();
-  }
-  async function postJSON(url, obj) {
-    const r = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(obj),
-      cache: "no-cache"
+
+  function jsonp(params) {
+    const cb = "__SISTOCK_CB_" + Math.random().toString(36).slice(2);
+    return new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      const u = new URL(WEB_APP_URL);
+      Object.entries(params||{}).forEach(([k,v])=> u.searchParams.set(k, v));
+      u.searchParams.set("cb", cb);
+      window[cb] = (data) => { resolve(data); cleanup(); };
+      s.src = u.toString();
+      s.onerror = () => { reject(new Error("Network/JSONP error")); cleanup(); };
+      document.head.appendChild(s);
+      function cleanup(){ try{ delete window[cb]; }catch{} s.remove(); }
+      setTimeout(()=>{ if(window[cb]){ reject(new Error("Timeout")); cleanup(); } }, 15000);
     });
-    if (!r.ok) throw httpErr(r);
-    const ct = (r.headers.get("content-type") || "").toLowerCase();
-    if (!ct.includes("application/json")) { const t = await r.text(); throw new Error("Non-JSON: " + t.slice(0, 160)); }
-    return r.json();
   }
+  function enc(obj) { return encodeURIComponent(JSON.stringify(obj||{})); }
+
   const DataService = {
-    ping(){ const u=new URL(WEB_APP_URL); u.searchParams.set("action","ping"); return getJSON(u); },
-    pullStock(bulan,tahun){
-      const u=new URL(WEB_APP_URL); u.searchParams.set("action","pullStock");
-      u.searchParams.set("bulan", titleCase(bulan)); u.searchParams.set("tahun", String(tahun));
-      return getJSON(u);
-    },
-    pushStock(items){
-      const safe = (Array.isArray(items)? items: []).map(it=>({
-        "Kode Barang": it["Kode Barang"] || it.kode || it.kodeBarang || "",
-        "Nama Barang": it["Nama Barang"] || it.nama || "",
-        "Kategori": it["Kategori"] || it.kategori || "Lainnya",
-        "Satuan": it["Satuan"] || it.satuan || "pcs",
-        "Sisa Bulan Lalu": + (it["Sisa Bulan Lalu"] ?? it.sisa ?? 0),
-        "Penambahan": + (it["Penambahan"] ?? it.tambah ?? 0),
-        "Pengurangan": + (it["Pengurangan"] ?? it.kurang ?? 0),
-        "Stock": (it["Stock"] === "" || it["Stock"] == null) ? "" : +it["Stock"],
-        "Harga Barang": + (it["Harga Barang"] ?? it.harga ?? 0),
-        "Jumlah Harga": (it["Jumlah Harga"] === "" || it["Jumlah Harga"] == null) ? "" : +it["Jumlah Harga"],
-        "Bulan": titleCase(it["Bulan"] || it.bulan || new Date().toLocaleString("id-ID",{month:"long"})),
-        "Tahun": String(it["Tahun"] || it.tahun || new Date().getFullYear()),
-        "Updated At": it["Updated At"] || nowIso()
-      }));
-      return postJSON(WEB_APP_URL, { action:"pushStock", items: safe });
-    }
+    ping() { return jsonp({ action: "ping" }); },
+    pullStock(bulan, tahun) { return jsonp({ action: "pullStock", bulan, tahun }); },
+    pushStock(items) { return jsonp({ action: "pushstock_get", payload: enc({ items }) }); }
   };
+
+  // Shim agar fungsi UI lama tetap jalan tanpa ubah layout/kode tampilan
   window.pullServerMonthItems = async (bulan, tahun) => {
     const res = await DataService.pullStock(bulan, tahun);
-    if (!res || res.ok !== true) throw new Error("Server non-ok");
+    if (!res || res.ok !== true) throw new Error(res?.message || "Server non-ok");
     return res.data ? (res.data.items || []) : [];
   };
+
   window.pushItems = async (items) => {
     const res = await DataService.pushStock(items);
-    if (!res || res.ok !== true) throw new Error("Server non-ok");
+    if (!res || res.ok !== true) throw new Error(res?.message || "Server non-ok");
     return res.data || {};
   };
-  const css = document.createElement("style"); css.textContent=".mini{position:fixed;right:12px;bottom:12px;z-index:9999;opacity:.25}.mini+button{right:68px}"; document.head.appendChild(css);
+
+  // Tombol kecil uji (boleh dihapus)
+  const css=document.createElement("style"); css.textContent=".mini{position:fixed;right:12px;bottom:12px;z-index:9999;opacity:.25}.mini+button{right:68px}"; document.head.appendChild(css);
   const b1=document.createElement("button"); b1.className="mini"; b1.textContent="ping";
   const b2=document.createElement("button"); b2.className="mini"; b2.textContent="pull"; b2.style.right="68px";
-  b1.onclick=async()=>{try{const j=await DataService.ping(); alert("PING OK "+JSON.stringify(j));}catch(e){alert("PING ERR "+e.message);}};
-  b2.onclick=async()=>{try{const j=await DataService.pullStock(new Date().toLocaleString("id-ID",{month:"long"}), new Date().getFullYear()); alert("PULL items="+(j?.data?.items?.length||0));}catch(e){alert("PULL ERR "+e.message);}};
+  b1.onclick=async()=>{ try{ const j=await DataService.ping(); alert("PING "+JSON.stringify(j)); }catch(e){ alert("PING ERR "+e.message); } };
+  b2.onclick=async()=>{ try{ const j=await DataService.pullStock(new Date().toLocaleString("id-ID",{month:"long"}), new Date().getFullYear()); alert("PULL "+(j?.data?.items?.length||0)); }catch(e){ alert("PULL ERR "+e.message); } };
   document.body.appendChild(b1); document.body.appendChild(b2);
 })();
 </script>
